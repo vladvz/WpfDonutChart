@@ -30,6 +30,15 @@ namespace WpfDonutChart.Controls
         public static readonly DependencyProperty TotalProperty =
             DependencyProperty.Register("Total", typeof(double), typeof(DonutChart), new PropertyMetadata(100.0, OnPropertyChanged));
 
+        public double Elapsed
+        {
+            get { return (double)GetValue(ElapsedProperty); }
+            set { SetValue(ElapsedProperty, value); }
+        }
+
+        public static readonly DependencyProperty ElapsedProperty =
+            DependencyProperty.Register("Elapsed", typeof(double), typeof(DonutChart), new PropertyMetadata(25.0, OnPropertyChanged));
+
         public double Left
         {
             get { return (double) GetValue(LeftProperty); }
@@ -37,7 +46,7 @@ namespace WpfDonutChart.Controls
         }
 
         public static readonly DependencyProperty LeftProperty =
-            DependencyProperty.Register("Left", typeof(double), typeof(DonutChart), new PropertyMetadata(25.0, OnPropertyChanged));
+            DependencyProperty.Register("Left", typeof(double), typeof(DonutChart), new PropertyMetadata(0.0, OnPropertyChanged));
 
         public double Radius
         {
@@ -118,6 +127,10 @@ namespace WpfDonutChart.Controls
 
             this.Width = this.Height = diameter;
 
+            var elapsedWedgeAngle = this.Elapsed / this.Total * 360.0;
+            var leftWedgeAngle = 360.0 - elapsedWedgeAngle;
+            var leftRotationAngle = elapsedWedgeAngle;
+
             canvas.Children.Clear();
 
             PiePiece elapsedPiece = new PiePiece()
@@ -127,8 +140,8 @@ namespace WpfDonutChart.Controls
                 CentreX = this.Radius,
                 CentreY = this.Radius,
                 PushOut = 0.0,
-                WedgeAngle = 90.0,
                 PieceValue = 0.0,
+                WedgeAngle = elapsedWedgeAngle,
                 RotationAngle = 0.0,
                 Fill = this.ElapsedFill
             };
@@ -140,9 +153,9 @@ namespace WpfDonutChart.Controls
                 CentreX = this.Radius,
                 CentreY = this.Radius,
                 PushOut = 0.0,
-                WedgeAngle = 270.0,
                 PieceValue = 0.0,
-                RotationAngle = 90.0,
+                WedgeAngle = leftWedgeAngle,
+                RotationAngle = leftRotationAngle,
                 Fill = this.LeftFill
             };
 
