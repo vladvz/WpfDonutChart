@@ -14,12 +14,30 @@ namespace WpfDonutChart.Controls
         public DonutChart()
         {
             InitializeComponent();
-            InitControl();
+            DrawControl();
         }
 
         #endregion
 
         #region Properties
+
+        public double Total
+        {
+            get { return (double) GetValue(TotalProperty); }
+            set { SetValue(TotalProperty, value); }
+        }
+
+        public static readonly DependencyProperty TotalProperty =
+            DependencyProperty.Register("Total", typeof(double), typeof(DonutChart), new PropertyMetadata(100.0, OnPropertyChanged));
+
+        public double Left
+        {
+            get { return (double) GetValue(LeftProperty); }
+            set { SetValue(LeftProperty, value); }
+        }
+
+        public static readonly DependencyProperty LeftProperty =
+            DependencyProperty.Register("Left", typeof(double), typeof(DonutChart), new PropertyMetadata(25.0, OnPropertyChanged));
 
         public double Radius
         {
@@ -93,32 +111,6 @@ namespace WpfDonutChart.Controls
         #endregion
 
         #region Methods
-
-        private void InitControl()
-        {
-            //UpdateRadius(this, Radius);
-            //UpdateElapsedFill(this, ElapsedFill);
-            DrawControl();
-        }
-
-        private void UpdateRadius(UserControl parent, double radius)
-        {
-            var diameter = radius * 2;
-
-            //parent.Width = parent.Height = diameter;
-
-            DrawControl();
-        }
-
-        private void UpdateElapsedFill(UserControl parent, Brush brush)
-        {
-            DrawControl();
-        }
-
-        private void UpdateLeftFill(UserControl parent, Brush brush)
-        {
-            DrawControl();
-        }
 
         private void DrawControl()
         {
