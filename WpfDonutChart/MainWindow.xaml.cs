@@ -12,16 +12,28 @@ namespace WpfDonutChart
             InitializeComponent();
         }
 
-        private void OnIncreaseClick(object sender, RoutedEventArgs e)
+        private void OnIncrease1Click(object sender, RoutedEventArgs e)
         {
-            donut1.Elapsed += 10;
-            donut2.Elapsed += 20;
+            if (donut1.Elapsed < donut1.Total)
+                donut1.Elapsed += 10;
         }
 
-        private void OnDecreaseClick(object sender, RoutedEventArgs e)
+        private void OnDecrease1Click(object sender, RoutedEventArgs e)
         {
-            donut1.Elapsed -= 10;
-            donut2.Elapsed -= 20;
+            if (donut1.Elapsed > 0)
+                donut1.Elapsed -= 10;
+        }
+
+        private void OnIncrease2Click(object sender, RoutedEventArgs e)
+        {
+            if (donut2.Elapsed < donut2.Total)
+                donut2.Elapsed += 20;
+        }
+
+        private void OnDecrease2Click(object sender, RoutedEventArgs e)
+        {
+            if (donut2.Elapsed > 0)
+                donut2.Elapsed -= 20;
         }
     }
 }

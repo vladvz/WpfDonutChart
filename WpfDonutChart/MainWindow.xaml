@@ -43,15 +43,23 @@
                              Radius="150"
                              Total="100" />
 
-        <Button Grid.Row="1"
-                Grid.ColumnSpan="2"
-                Click="OnIncreaseClick">
+        <Button Grid.Row="1" Grid.Column="0"
+                Click="OnIncrease1Click">
             Increase
         </Button>
 
-        <Button Grid.Row="2"
-                Grid.ColumnSpan="2"
-                Click="OnDecreaseClick">
+        <Button Grid.Row="2" Grid.Column="0"
+                Click="OnDecrease1Click">
+            Decrease
+        </Button>
+
+        <Button Grid.Row="1" Grid.Column="1"
+                Click="OnIncrease2Click">
+            Increase
+        </Button>
+
+        <Button Grid.Row="2" Grid.Column="1"
+                Click="OnDecrease2Click">
             Decrease
         </Button>
 
