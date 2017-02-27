@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -20,6 +21,15 @@ namespace WpfDonutChart.Controls
         #endregion
 
         #region Properties
+
+        public string Text
+        {
+            get { return (string) GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+
+        public static readonly DependencyProperty TextProperty =
+            DependencyProperty.Register("Text", typeof(string), typeof(DonutChart), new PropertyMetadata(string.Empty, OnPropertyChanged));
 
         public double Total
         {
@@ -64,7 +74,7 @@ namespace WpfDonutChart.Controls
         }
 
         public static readonly DependencyProperty InnerRadiusProperty =
-            DependencyProperty.Register("InnerRadius", typeof(double), typeof(DonutChart), new PropertyMetadata(60.0, OnPropertyChanged));
+            DependencyProperty.Register("InnerRadius", typeof(double), typeof(DonutChart), new PropertyMetadata(80.0, OnPropertyChanged));
 
         public Brush ElapsedFill
         {
@@ -73,7 +83,7 @@ namespace WpfDonutChart.Controls
         }
 
         public static readonly DependencyProperty ElapsedFillProperty =
-            DependencyProperty.Register("ElapsedFill", typeof(Brush), typeof(DonutChart), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 255, 0)), OnPropertyChanged));
+            DependencyProperty.Register("ElapsedFill", typeof(Brush), typeof(DonutChart), new PropertyMetadata(new SolidColorBrush(Colors.GreenYellow), OnPropertyChanged));
 
         public Brush LeftFill
         {
@@ -82,7 +92,7 @@ namespace WpfDonutChart.Controls
         }
 
         public static readonly DependencyProperty LeftFillProperty =
-            DependencyProperty.Register("LeftFill", typeof(Brush), typeof(DonutChart), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(255, 0, 0)), OnPropertyChanged));
+            DependencyProperty.Register("LeftFill", typeof(Brush), typeof(DonutChart), new PropertyMetadata(new SolidColorBrush(Colors.Red), OnPropertyChanged));
 
         #endregion
 
@@ -92,28 +102,6 @@ namespace WpfDonutChart.Controls
         {
             var parent = (DonutChart) d;
 
-            parent.DrawControl();
-        }
-
-        private static void OnRadiusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var parent = (DonutChart) d;
-
-            parent.DrawControl();
-        }
-
-        private static void OnElapsedFillChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var parent = (DonutChart) d;
-
-            parent.DrawControl();
-        }
-
-        private static void OnLeftFillChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var parent = (DonutChart) d;
-
-            //parent.UpdateLeftFill(parent, (Brush) e.NewValue);
             parent.DrawControl();
         }
 
@@ -127,40 +115,66 @@ namespace WpfDonutChart.Controls
 
             this.Width = this.Height = diameter;
 
+            var left = this.Total <= this.Elapsed ? 0.0 : this.Total - this.Elapsed;
             var elapsedWedgeAngle = this.Elapsed / this.Total * 360.0;
             var leftWedgeAngle = 360.0 - elapsedWedgeAngle;
             var leftRotationAngle = elapsedWedgeAngle;
 
             canvas.Children.Clear();
 
-            PiePiece elapsedPiece = new PiePiece()
+            // Don't draw Elapsed pie when Elapsed = 0
+            if (this.Elapsed > 0.0)
             {
-                Radius = this.Radius,
-                InnerRadius = this.InnerRadius,
-                CentreX = this.Radius,
-                CentreY = this.Radius,
-                PushOut = 0.0,
-                PieceValue = 0.0,
-                WedgeAngle = elapsedWedgeAngle,
-                RotationAngle = 0.0,
-                Fill = this.ElapsedFill
-            };
+                // Fix to close shape
+                if (elapsedWedgeAngle >= 360.0)
+                    elapsedWedgeAngle = 359.999;
 
-            PiePiece leftPiece = new PiePiece()
+                PiePiece elapsedPiece = new PiePiece()
+                {
+                    Radius = this.Radius,
+                    InnerRadius = this.InnerRadius,
+                    CentreX = this.Radius,
+                    CentreY = this.Radius,
+                    PushOut = 0.0,
+                    PieceValue = 0.0,
+                    WedgeAngle = elapsedWedgeAngle,
+                    RotationAngle = 0.0,
+                    Fill = this.ElapsedFill
+                };
+
+                canvas.Children.Insert(0, elapsedPiece);
+            }
+
+            // Don't draw Left pie when Elapsed >= Total
+            if (this.Elapsed < this.Total)
             {
-                Radius = this.Radius,
-                InnerRadius = this.InnerRadius,
-                CentreX = this.Radius,
-                CentreY = this.Radius,
-                PushOut = 0.0,
-                PieceValue = 0.0,
-                WedgeAngle = leftWedgeAngle,
-                RotationAngle = leftRotationAngle,
-                Fill = this.LeftFill
-            };
+                // Fix to close shape
+                if (leftWedgeAngle >= 360.0)
+                {
+                    leftRotationAngle = 0.0;
+                    leftWedgeAngle = 359.999;
+                }
 
-            canvas.Children.Insert(0, elapsedPiece);
-            canvas.Children.Insert(0, leftPiece);
+                PiePiece leftPiece = new PiePiece()
+                {
+                    Radius = this.Radius,
+                    InnerRadius = this.InnerRadius,
+                    CentreX = this.Radius,
+                    CentreY = this.Radius,
+                    PushOut = 0.0,
+                    PieceValue = 0.0,
+                    WedgeAngle = leftWedgeAngle,
+                    RotationAngle = leftRotationAngle,
+                    Fill = this.LeftFill
+                };
+
+                canvas.Children.Insert(0, leftPiece);
+            }
+
+            viewBox.Width = viewBox.Height = 2.0 * this.InnerRadius / Math.Sqrt(2);
+
+            if (string.IsNullOrWhiteSpace(this.Text))
+                textBlock.Text = $"{(int) (left)}";
         }
 
         #endregion

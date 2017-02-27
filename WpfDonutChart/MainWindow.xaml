@@ -1,15 +1,60 @@
 ﻿<Window x:Class="WpfDonutChart.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfDonutChart"
         xmlns:controls="clr-namespace:WpfDonutChart.Controls;assembly=WpfDonutChart.Controls"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="525">
-    
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:WpfDonutChart"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="MainWindow"
+        Width="800"
+        Height="500"
+        mc:Ignorable="d">
+
     <Grid>
-        <controls:DonutChart Radius="150" InnerRadius="110" Elapsed="30" ElapsedFill="GreenYellow" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" />
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <controls:DonutChart x:Name="donut1"
+                             Grid.Column="0"
+                             Margin="10"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Top"
+                             Elapsed="0"
+                             InnerRadius="110"
+                             Radius="150"
+                             Total="100" />
+
+        <controls:DonutChart x:Name="donut2"
+                             Grid.Column="1"
+                             Margin="10"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Top"
+                             Elapsed="0"
+                             InnerRadius="110"
+                             Radius="150"
+                             Total="100" />
+
+        <Button Grid.Row="1"
+                Grid.ColumnSpan="2"
+                Click="OnIncreaseClick">
+            Increase
+        </Button>
+
+        <Button Grid.Row="2"
+                Grid.ColumnSpan="2"
+                Click="OnDecreaseClick">
+            Decrease
+        </Button>
+
     </Grid>
-    
+
 </Window>
