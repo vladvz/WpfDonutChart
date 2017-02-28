@@ -6,13 +6,13 @@ using System.Windows.Media;
 namespace WpfDonutChart.Controls
 {
     /// <summary>
-    /// Interaction logic for DonutChart.xaml
+    /// Interaction logic for ProgressDonutChart.xaml
     /// </summary>
-    public partial class DonutChart : UserControl
+    public partial class ProgressDonutChart : UserControl
     {
         #region Constructor
 
-        public DonutChart()
+        public ProgressDonutChart()
         {
             InitializeComponent();
             DrawControl();
@@ -22,41 +22,50 @@ namespace WpfDonutChart.Controls
 
         #region Properties
 
+        public static readonly DependencyProperty TextProperty =
+            DependencyProperty.Register("Text", typeof(string), typeof(ProgressDonutChart), new PropertyMetadata(string.Empty, OnPropertyChanged));
+
+        public int Minimum
+        {
+            get { return (int) GetValue(MinimumProperty); }
+            set { SetValue(MinimumProperty, value); }
+        }
+
+        public static readonly DependencyProperty MinimumProperty =
+            DependencyProperty.Register("Minimum", typeof(int), typeof(ProgressDonutChart), new PropertyMetadata(0, OnPropertyChanged));
+
+        public int Maximum
+        {
+            get { return (int) GetValue(MaximumProperty); }
+            set { SetValue(MaximumProperty, value); }
+        }
+
+        public static readonly DependencyProperty MaximumProperty =
+            DependencyProperty.Register("Maximum", typeof(int), typeof(ProgressDonutChart), new PropertyMetadata(100, OnPropertyChanged));
+
+        public int Step
+        {
+            get { return (int) GetValue(StepProperty); }
+            set { SetValue(StepProperty, value); }
+        }
+
+        public static readonly DependencyProperty StepProperty =
+            DependencyProperty.Register("Step", typeof(int), typeof(ProgressDonutChart), new PropertyMetadata(1, OnPropertyChanged));
+
+        public int Value
+        {
+            get { return (int) GetValue(ValueProperty); }
+            set { SetValue(ValueProperty, value); }
+        }
+
         public string Text
         {
             get { return (string) GetValue(TextProperty); }
             set { SetValue(TextProperty, value); }
         }
 
-        public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(DonutChart), new PropertyMetadata(string.Empty, OnPropertyChanged));
-
-        public double Total
-        {
-            get { return (double) GetValue(TotalProperty); }
-            set { SetValue(TotalProperty, value); }
-        }
-
-        public static readonly DependencyProperty TotalProperty =
-            DependencyProperty.Register("Total", typeof(double), typeof(DonutChart), new PropertyMetadata(100.0, OnPropertyChanged));
-
-        public double Elapsed
-        {
-            get { return (double)GetValue(ElapsedProperty); }
-            set { SetValue(ElapsedProperty, value); }
-        }
-
-        public static readonly DependencyProperty ElapsedProperty =
-            DependencyProperty.Register("Elapsed", typeof(double), typeof(DonutChart), new PropertyMetadata(25.0, OnPropertyChanged));
-
-        public double Left
-        {
-            get { return (double) GetValue(LeftProperty); }
-            set { SetValue(LeftProperty, value); }
-        }
-
-        public static readonly DependencyProperty LeftProperty =
-            DependencyProperty.Register("Left", typeof(double), typeof(DonutChart), new PropertyMetadata(0.0, OnPropertyChanged));
+        public static readonly DependencyProperty ValueProperty =
+            DependencyProperty.Register("Value", typeof(int), typeof(ProgressDonutChart), new PropertyMetadata(0, OnPropertyChanged));
 
         public double Radius
         {
@@ -65,7 +74,7 @@ namespace WpfDonutChart.Controls
         }
 
         public static readonly DependencyProperty RadiusProperty =
-            DependencyProperty.Register("Radius", typeof(double), typeof(DonutChart), new PropertyMetadata(100.0, OnPropertyChanged));
+            DependencyProperty.Register("Radius", typeof(double), typeof(ProgressDonutChart), new PropertyMetadata(100.0, OnPropertyChanged));
 
         public double InnerRadius
         {
@@ -74,16 +83,16 @@ namespace WpfDonutChart.Controls
         }
 
         public static readonly DependencyProperty InnerRadiusProperty =
-            DependencyProperty.Register("InnerRadius", typeof(double), typeof(DonutChart), new PropertyMetadata(80.0, OnPropertyChanged));
+            DependencyProperty.Register("InnerRadius", typeof(double), typeof(ProgressDonutChart), new PropertyMetadata(80.0, OnPropertyChanged));
 
-        public Brush ElapsedFill
+        public Brush ProgressFill
         {
-            get { return (Brush) GetValue(ElapsedFillProperty); }
-            set { SetValue(ElapsedFillProperty, value); }
+            get { return (Brush) GetValue(ProgressFillProperty); }
+            set { SetValue(ProgressFillProperty, value); }
         }
 
-        public static readonly DependencyProperty ElapsedFillProperty =
-            DependencyProperty.Register("ElapsedFill", typeof(Brush), typeof(DonutChart), new PropertyMetadata(new SolidColorBrush(Colors.GreenYellow), OnPropertyChanged));
+        public static readonly DependencyProperty ProgressFillProperty =
+            DependencyProperty.Register("ElapsedFill", typeof(Brush), typeof(ProgressDonutChart), new PropertyMetadata(new SolidColorBrush(Colors.GreenYellow), OnPropertyChanged));
 
         public Brush LeftFill
         {
@@ -92,7 +101,7 @@ namespace WpfDonutChart.Controls
         }
 
         public static readonly DependencyProperty LeftFillProperty =
-            DependencyProperty.Register("LeftFill", typeof(Brush), typeof(DonutChart), new PropertyMetadata(new SolidColorBrush(Colors.Red), OnPropertyChanged));
+            DependencyProperty.Register("LeftFill", typeof(Brush), typeof(ProgressDonutChart), new PropertyMetadata(new SolidColorBrush(Colors.Red), OnPropertyChanged));
 
         #endregion
 
@@ -100,7 +109,7 @@ namespace WpfDonutChart.Controls
 
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var parent = (DonutChart) d;
+            var parent = (ProgressDonutChart) d;
 
             parent.DrawControl();
         }
@@ -115,15 +124,14 @@ namespace WpfDonutChart.Controls
 
             this.Width = this.Height = diameter;
 
-            var left = this.Total <= this.Elapsed ? 0.0 : this.Total - this.Elapsed;
-            var elapsedWedgeAngle = this.Elapsed / this.Total * 360.0;
+            var elapsedWedgeAngle = 360.0 * this.Value / (this.Maximum - this.Minimum);
             var leftWedgeAngle = 360.0 - elapsedWedgeAngle;
             var leftRotationAngle = elapsedWedgeAngle;
 
             canvas.Children.Clear();
 
-            // Don't draw Elapsed pie when Elapsed = 0
-            if (this.Elapsed > 0.0)
+            // Don't draw Elapsed pie when Value equals Minimum
+            if (this.Value != this.Minimum)
             {
                 // Fix to close shape
                 if (elapsedWedgeAngle >= 360.0)
@@ -139,14 +147,14 @@ namespace WpfDonutChart.Controls
                     PieceValue = 0.0,
                     WedgeAngle = elapsedWedgeAngle,
                     RotationAngle = 0.0,
-                    Fill = this.ElapsedFill
+                    Fill = this.ProgressFill
                 };
 
                 canvas.Children.Insert(0, elapsedPiece);
             }
 
-            // Don't draw Left pie when Elapsed >= Total
-            if (this.Elapsed < this.Total)
+            // Don't draw Left pie when Value >= Maximum
+            if (this.Value < this.Maximum)
             {
                 // Fix to close shape
                 if (leftWedgeAngle >= 360.0)
@@ -172,9 +180,6 @@ namespace WpfDonutChart.Controls
             }
 
             viewBox.Width = viewBox.Height = 2.0 * this.InnerRadius / Math.Sqrt(2);
-
-            if (string.IsNullOrWhiteSpace(this.Text))
-                textBlock.Text = $"{(int) (left)}";
         }
 
         #endregion

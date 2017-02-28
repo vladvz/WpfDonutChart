@@ -44,15 +44,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DonutChart\DonutChart.xaml.cs">
-      <DependentUpon>DonutChart.xaml</DependentUpon>
+    <Compile Include="ProgressDonutChart\ProgressDonutChart.xaml.cs">
+      <DependentUpon>ProgressDonutChart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DonutChart\PiePiece.cs" />
-    <Compile Include="DonutChart\Utils.cs" />
+    <Compile Include="ProgressDonutChart\PiePiece.cs" />
+    <Compile Include="ProgressDonutChart\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DonutChart\DonutChart.xaml">
+    <Page Include="ProgressDonutChart\ProgressDonutChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

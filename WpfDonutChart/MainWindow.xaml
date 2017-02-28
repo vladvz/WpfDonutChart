@@ -23,42 +23,46 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <controls:DonutChart x:Name="donut1"
-                             Grid.Column="0"
-                             Margin="10"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center"
-                             Elapsed="0"
-                             InnerRadius="110"
-                             Radius="150"
-                             Total="100" />
+        <controls:ProgressDonutChart x:Name="donut1"
+                                     Grid.Column="0"
+                                     Margin="10"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     InnerRadius="145"
+                                     ProgressFill="#108FD2"
+                                     LeftFill="#CCCCCC"
+                                     Radius="150" />
 
-        <controls:DonutChart x:Name="donut2"
-                             Grid.Column="1"
-                             Margin="10"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center"
-                             Elapsed="0"
-                             InnerRadius="110"
-                             Radius="150"
-                             Total="100" />
+        <controls:ProgressDonutChart x:Name="donut2"
+                                     Grid.Column="1"
+                                     Margin="10"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     InnerRadius="110"
+                                     Maximum="200"
+                                     Radius="150"
+                                     Step="5" />
 
-        <Button Grid.Row="1" Grid.Column="0"
+        <Button Grid.Row="1"
+                Grid.Column="0"
                 Click="OnIncrease1Click">
             Increase
         </Button>
 
-        <Button Grid.Row="2" Grid.Column="0"
+        <Button Grid.Row="2"
+                Grid.Column="0"
                 Click="OnDecrease1Click">
             Decrease
         </Button>
 
-        <Button Grid.Row="1" Grid.Column="1"
+        <Button Grid.Row="1"
+                Grid.Column="1"
                 Click="OnIncrease2Click">
             Increase
         </Button>
 
-        <Button Grid.Row="2" Grid.Column="1"
+        <Button Grid.Row="2"
+                Grid.Column="1"
                 Click="OnDecrease2Click">
             Decrease
         </Button>

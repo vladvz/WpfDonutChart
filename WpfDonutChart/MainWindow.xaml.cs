@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace WpfDonutChart
 {
@@ -10,30 +11,48 @@ namespace WpfDonutChart
         public MainWindow()
         {
             InitializeComponent();
+
+            donut1.Text = GetLeftValue(donut1.Value, donut1.Minimum, donut1.Maximum);
+            donut2.Text = GetPercentage(donut2.Value, donut2.Minimum, donut2.Maximum);
         }
+
+        private Func<int, int, int, string> GetLeftValue = (value, minimum, maximum) => { return $"Left: {maximum - minimum - value}"; };
+        private Func<int, int, int, string> GetPercentage = (value, minimum, maximum) => { return $"{100 * value / (maximum - minimum)}%"; };
 
         private void OnIncrease1Click(object sender, RoutedEventArgs e)
         {
-            if (donut1.Elapsed < donut1.Total)
-                donut1.Elapsed += 10;
+            if (donut1.Value < donut1.Maximum)
+            {
+                donut1.Value += donut1.Step;
+                donut1.Text = GetLeftValue(donut1.Value, donut1.Minimum, donut1.Maximum);
+            }
         }
 
         private void OnDecrease1Click(object sender, RoutedEventArgs e)
         {
-            if (donut1.Elapsed > 0)
-                donut1.Elapsed -= 10;
+            if (donut1.Value > donut1.Minimum)
+            {
+                donut1.Value -= donut1.Step;
+                donut1.Text = GetLeftValue(donut1.Value, donut1.Minimum, donut1.Maximum);
+            }
         }
 
         private void OnIncrease2Click(object sender, RoutedEventArgs e)
         {
-            if (donut2.Elapsed < donut2.Total)
-                donut2.Elapsed += 20;
+            if (donut2.Value < donut2.Maximum)
+            {
+                donut2.Value += donut2.Step;
+                donut2.Text = GetPercentage(donut2.Value, donut2.Minimum, donut2.Maximum);
+            }
         }
 
         private void OnDecrease2Click(object sender, RoutedEventArgs e)
         {
-            if (donut2.Elapsed > 0)
-                donut2.Elapsed -= 20;
+            if (donut2.Value > donut2.Minimum)
+            {
+                donut2.Value -= donut2.Step;
+                donut2.Text = GetPercentage(donut2.Value, donut2.Minimum, donut2.Maximum);
+            }
         }
     }
 }
